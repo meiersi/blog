@@ -1,0 +1,57 @@
+The `blaze-builder` library: (more) efficiently constructing lazy bytestrings
+=======================================================================================
+
+Hello dear reader, I am [Simon Meier](http://people.inf.ethz.ch/meiersi), a
+swiss Haskell enthusiast currently pursuing his PhD in computer science at ETH
+Zurich. In this blog post, I'll introduce you to the
+[`blaze-builder`](http://hackage.haskell.org/package/blaze-builder) library.
+
+Typically, you would use this library to *efficiently* construct streams of
+bytes represented as a lazy bytestring. For example, to save your application
+state in a space efficient binary form to a file or to send a response to some
+request over the network. 
+
+Probably, you know about the
+[`binary`](http://hackage.haskell.org/package/binary-0.5.0.2) package, which
+provides the
+[`Data.Binary.Builder`](http://hackage.haskell.org/packages/archive/binary/0.5.0.2/doc/html/Data-Binary-Builder.html)
+module targeting exactly the above use-case. This is no coincidence.  During
+this year's Google Summer of Code, [Jasper Van der
+Jeugt](http://jaspervdj.be) and I developed the `blaze-buider` library to
+overcome performance shortcomings of `Data.Binary.Builder` with respect to the
+specific needs of the [`blaze-html`](http://jaspervdj.be/blaze) HTML templating
+library. Since then, I have restructured the `blaze-builder` library to serve
+as a drop-in replacement for `Data.Binary.Builder`, *which it improves upon
+with respect to both speed as well as expressivity*.
+
+This first blog post about the `blaze-builder` library features a simple usage
+example to get you acquinted with the library as well as a comparison of the
+performance between `blaze-builder` and `binary`.
+
+In the next blog post, I will then explain how the `blaze-builder` library is
+implemented.  Intuitively, its implementation can be seen as a neat abstraction of
+buffered output. However, more about that in the next post.
+
+
+Usage example
+-------------
+
+Let us first install the newest version (0.2.0.0) of the
+[`blaze-builder`](http://hackage.haskell.org/package/blaze-builder) library
+
+~~~
+  cabal install blaze-builder
+~~~
+
+and import its main module as well as the UTF-8 encoding module.
+
+~~~ {.haskell .numberLines}
+  import Text.Blaze.Builder
+  import Text.Blaze.Builder.Char.Utf8
+~~~
+
+
+Comparison to the `binary` library
+----------------------------------
+
+

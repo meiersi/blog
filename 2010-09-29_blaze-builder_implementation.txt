@@ -1,0 +1,30 @@
+The `blaze-builder` library: an abstraction of buffered output
+==============================================================
+
+
+This first blog post about the `blaze-builder` library features a simple usage
+example to get you acquinted with the library as well as a comparison of the
+performance between `blaze-builder` and `binary`.
+
+In the next blog post, I will then explain how the `blaze-builder` library is
+implemented.  Intuitively, its implementation can be seen as a neat abstraction of
+buffered output. However, more about that in the next post.
+
+
+Running a builder
+-----------------
+
+
+Creating your own builders
+--------------------------
+
+
+
+Future work
+-----------
+
+improve binary combine with attoparsec
+move to 'Data.ByteString.Builder' and 'bytestring-builder' package, if
+community thinks this is a good idea.
+encode vs. serialize
+
