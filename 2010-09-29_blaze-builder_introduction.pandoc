@@ -1,0 +1,79 @@
+blaze-builder:  An Efficient Abstraction of Buffered Output
+===========================================================
+
+Hello dear reader. I'm Simon Meier, a swiss Haskell enthusiast currently
+pursuing his PhD in computer science at ETH Zurich. In this blog post, -- yay,
+my first post ever :-) -- I'll introduce you to the 'blaze-builder' library.
+
+Typically, you would use this library to construct a stream of bytes in the
+form of a lazy bytestring. For example, to save your application state in a
+space efficient binary form to a file or send a response to some request over
+the network. 
+
+Probably, you know about the LINK'binary' package, which provides the
+LINK'Data.Binary.Builder' module that targets exactly the above use-case. This
+is no coincidence. Originally, Jasper Van der Jeugt and I developed the
+'blaze-buider' library to overcome performance shortcomings of
+'Data.Binary.Builder' with respect to the specific needs of the 'blaze-html'
+HTML templating library. Now, I have restructured the 'blaze-builder' library
+to serve as a drop-in replacement for @Data.Binary.Builder@, which it improves
+upon with respect to both speed as well as expressivity.
+
+
+Before :wq
+
+
+the context of our 
+
+We took a lot of inspiration from this module. 
+
+The 'blaze-buider' library was originally developed with the specific needs of
+the @blaze-html@ HTML templating library in mind. 
+
+
+library started out as an extension of Data.Binary.Builder
+
+
+. For example, when building 
+
+
+This is my first
+blog post ever and I'll 
+
+and I'll use it to present you the 'blaze-builder' package
+
+
+Intro:
+------
+
+/A note on history./ This serialization library was inspired by the
+@Data.Binary.Builder@ module provided by the @binary@ package. It was
+originally developed with the specific needs of the @blaze-html@ package in
+mind. Since then it has been restructured to serve as a drop-in replacement
+for @Data.Binary.Builder@, which it improves upon both in speed as well as
+expressivity.
+
+
+Usage example:
+--------------
+
+
+
+Speed
+-----
+
+
+
+Creating your own builders
+--------------------------
+
+
+
+Future work
+-----------
+
+improve binary combine with attoparsec
+move to 'Data.ByteString.Builder' and 'bytestring-builder' package, if
+community thinks this is a good idea.
+encode vs. serialize
+
