@@ -50,13 +50,13 @@ Usage example
 
 > people = zipWith Person ["Haskell 98", "Switzerland", "λ-bot"] [12, 719, 7]
 
-> fromStringLength32le :: String -> Builder
-> fromStringLength32le cs = 
+> fromStringLen32le :: String -> Builder
+> fromStringLen32le cs = 
 >   fromInt32le (fromIntegral $ length cs) <> fromString cs
 
 > fromPerson :: Person -> Builder
 > fromPerson p = 
->   fromStringLength32le (name p) <> fromInt32le (fromIntegral $ age p)
+>   fromStringLen32le (name p) <> fromInt32le (fromIntegral $ age p)
 
 > fromPeople :: [Person] -> Builder
 > fromPeople = mconcat . map fromPerson
@@ -93,6 +93,31 @@ L.length $ lazyBinaryPeople cloneVillage
 >     , bench "strictBinaryPeople cloneVillage" $ 
 >         whnf strictBinaryPeople cloneVillage
 >     ]
+
+benchmarking lazyBinaryPeople cloneVillage
+collecting 100 samples, 6 iterations each, in estimated 1.719153 s
+bootstrapping with 100000 resamples
+mean: 2.865518 ms, lb 2.857689 ms, ub 2.876663 ms, ci 0.950
+std dev: 46.97193 us, lb 34.85909 us, ub 77.62898 us, ci 0.950
+found 3 outliers among 100 samples (3.0%)
+  2 (2.0%) high mild
+  1 (1.0%) high severe
+variance introduced by outliers: 0.994%
+variance is unaffected by outliers
+
+benchmarking strictBinaryPeople cloneVillage
+collecting 100 samples, 6 iterations each, in estimated 1.773298 s
+bootstrapping with 100000 resamples
+mean: 2.897231 ms, lb 2.891175 ms, ub 2.909595 ms, ci 0.950
+std dev: 42.46812 us, lb 25.51134 us, ub 77.38671 us, ci 0.950
+found 8 outliers among 100 samples (8.0%)
+  4 (4.0%) high mild
+  4 (4.0%) high severe
+variance introduced by outliers: 0.993%
+variance is unaffected by outliers
+
+==> ~ 56 Mb/s
+
 
 Packing `[Word8]`
 -----------------
