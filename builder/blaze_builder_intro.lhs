@@ -118,6 +118,9 @@ variance is unaffected by outliers
 
 ==> ~ 56 Mb/s
 
+13 x 10 cm
+
+370 x 278
 
 Packing `[Word8]`
 -----------------
