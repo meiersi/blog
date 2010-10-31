@@ -33,12 +33,13 @@ Usage example
 -------------
 
 > import qualified Data.ByteString      as S
-> import qualified Data.ByteString.Lazy as B
+> import qualified Data.ByteString.Lazy as L
 
 > import Text.Blaze.Builder
 > import Text.Blaze.Builder.Char.Utf8 (fromString)
 
 > import Data.Monoid
+> import Criterion.Main
 
 > infixl 4 <>
 
@@ -47,26 +48,26 @@ Usage example
 
 > data Person = Person { name :: String, age :: Int }
 
-FIXME: Use Unicode lambda
-
-> people = zipWith Person ["Haskell", "Brooks", "Lambdabot"] [50, 55, 80]
+> people = zipWith Person ["Haskell 98", "Switzerland", "λ-bot"] [12, 719, 7]
 
 > fromStringLength32le :: String -> Builder
-> fromStringLength32le cs = fromInt32le (length s) <> fromString s
+> fromStringLength32le cs = 
+>   fromInt32le (fromIntegral $ length cs) <> fromString cs
 
 > fromPerson :: Person -> Builder
-> fromPerson p = fromStringLength32le (name p) <> fromInt32le (age p)
+> fromPerson p = 
+>   fromStringLength32le (name p) <> fromInt32le (fromIntegral $ age p)
 
 > fromPeople :: [Person] -> Builder
 > fromPeople = mconcat . map fromPerson
 
-> cloneVillage :: [People]
+> cloneVillage :: [Person]
 > cloneVillage = take 10000 $ cycle $ people
 
-> lazyBinaryPeople :: [People] -> L.ByteString
+> lazyBinaryPeople :: [Person] -> L.ByteString
 > lazyBinaryPeople = toLazyByteString . fromPeople
 
-> strictBinaryPeople = :: [People] -> S.ByteString
+> strictBinaryPeople :: [Person] -> S.ByteString
 > strictBinaryPeople = toByteString . fromPeople
 
 Well now we would like to benchmark these two functions. That's no problem. But what do we compare these numbers to?
@@ -78,6 +79,20 @@ of `blaze-html` and in the end using `blaze-builder` turned out to be the fastes
 
 However, before  ... let us focus on simpler tasks where we have good competitors. 
 
+map S.length $ L.toChunks $ lazyBinaryPeople cloneVillage 
+[4088,32760,32760,32760,32760,32760,2113]
+
+L.length $ lazyBinaryPeople cloneVillage
+170001
+
+> main :: IO ()
+> main = defaultMain 
+>     [ bench "lazyBinaryPeople cloneVillage" $ 
+>         whnf (L.length . lazyBinaryPeople) cloneVillage
+>
+>     , bench "strictBinaryPeople cloneVillage" $ 
+>         whnf strictBinaryPeople cloneVillage
+>     ]
 
 Packing `[Word8]`
 -----------------
@@ -99,14 +114,14 @@ Well that's a number it could be good, but what do we compare it to? We cannot r
 it does not support the encoding of 'String's directly. Obviously, there are ways to sidestep this issue. Using for 
 example `Data.Text`.
 
-> import Data.Binary.Builder as 
+ import Data.Binary.Builder as 
 
-> fromStringLength32le' :: String -> Binary.Builder
-> fromStringLength32le' s = 
->    Binary.putInt32le (length s) <> fromByteString (T.encodeUtf8 (T.pack s))
+ fromStringLength32le' :: String -> Binary.Builder
+ fromStringLength32le' s = 
+    Binary.putInt32le (length s) <> fromByteString (T.encodeUtf8 (T.pack s))
 
-> fromPerson' :: Person -> Binary.Builder
-> fromPerson' p = fromStringLength32le' (name p) <> Binary.putInt32le (age p)
+ fromPerson' :: Person -> Binary.Builder
+ fromPerson' p = fromStringLength32le' (name p) <> Binary.putInt32le (age p)
 
 
 Now the corresponding benchmarks `lazyBinaryPeople' cloneVillage` take .. and  ...
