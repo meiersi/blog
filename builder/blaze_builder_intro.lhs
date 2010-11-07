@@ -35,8 +35,8 @@ Usage example
 > import qualified Data.ByteString      as S
 > import qualified Data.ByteString.Lazy as L
 
-> import Text.Blaze.Builder
-> import Text.Blaze.Builder.Char.Utf8 (fromString)
+> import Blaze.ByteString.Builder
+> import Blaze.ByteString.Builder.Char.Utf8 (fromString)
 
 > import Data.Monoid
 > import Criterion.Main
