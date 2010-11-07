@@ -1,5 +1,4 @@
 *.pdf
-*.html
 *.hi
 *.o
 builder/blaze_builder_intro
