@@ -1,0 +1,38 @@
+Defragmenting lazy bytestrings
+
+A long time ago there was this phenomenon that some well known operating system
+got slow and slower due to fragmentation of its main partition. However
+nowadays our software is engineered much better and fragmentation is no longer
+a problem... hmm, well... it depends: In this post I'll show you that
+fragmentation is definitely a problem and I'll present you two solutions based
+on blaze-builder.
+
+In the last post I introduced the blaze-builder library and stressed the point
+that it is important to ensure a large average chunk size for the constructed
+lazy bytestrings.
+
+You probably know the nice zlib library that allows you to compress a lazy
+bytestring with a single call to compress :: L.ByteString -> L.ByteString. So
+let's see how much it costs us, if the average chunk size of that lazy
+bytestring is small. We would also like to see if its worth defragmenting the
+lazy bytestring first with a call to defragment that we define as follows using
+the functions toLazyByteString and fromLazyByteString from blaze-builder.
+
+defragment :: L.ByteString -> L.ByteString
+defragment = toLazyByteString . fromLazyByteString
+
+The following plot shows the mean times for direct and defragmented compression
+of 200kb of both a random stream of bytes and a stream built as cycle
+[0::Word8..255]. (Note that you can find the corresponding boxplot here and its
+measurement log here.)
+
+
+The above plot shows that for compress defragmentation is definitely worth it.
+Sadly, I do not yet know the cause for the extreme slowdown of compress when it
+is called with lazy bytestrings with a small average chunk size. However, I
+also haven't looked at zlib's implementation yet. Comments are welcome :-)
+
+Note that defragmentation is a definitive win, an even better solution is to
+avoid defragmentation in the first place by constructing your lazy bytestrings
+using a Builder like it is for example provided by blaze-builder. This way you
+save both on allocation as well as on copying.
