@@ -18,8 +18,8 @@ bytestring is small. We would also like to see if its worth defragmenting the
 lazy bytestring first with a call to defragment that we define as follows using
 the functions toLazyByteString and fromLazyByteString from blaze-builder.
 
-defragment :: L.ByteString -> L.ByteString
-defragment = toLazyByteString . fromLazyByteString
+    defragment :: L.ByteString -> L.ByteString
+    defragment = toLazyByteString . fromLazyByteString
 
 The following plot shows the mean times for direct and defragmented compression
 of 200kb of both a random stream of bytes and a stream built as cycle
