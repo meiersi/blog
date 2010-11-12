@@ -1,0 +1,47 @@
+This is a log for the further experiments I made to establish design decisions
+for blaze-builder
+==============================================================================
+
+
+branch "feature-fromWrite-rules"
+--------------------------------
+
+fromWriteNList considered harmful for N > 1
+
+  => the chunked forcing is only beneficial for linked lists which reside
+  directly in memory. If the elements need to be computed, we significantly
+  lose performance. For an end-user, it is very difficult to judge if it is a
+  win. Hence, we go for the smaller code size.
+
+It is possible to have rewrite rules that do what 'fromWordNs' is currently
+doing => less code to manage :-)
+
+  Moreover, we don't need inline pragmas for all the small functions.
+  They work by themselves.
+
+  It would be nice, if they would even fuse with 'build'. This would allow us
+  to remove intermediate lists stemming from 'take' and Co. However, 'build' is
+  currently not exported from base. Hence, I don't know how we could achieve
+  this fusion.
+  
+
+
+branch "feature-packed-buffer-info
+----------------------------------
+
+packed arguments in pessimistic lazy calls 
+
+  3% speedup can be gained from using an unpacked pair to store the buffer
+  information. As it doesn't change code complexity, we should go for it.
+
+  What is also important is to force the argument before calling the
+  continuation. The forcing is almost free and the latter access becomes
+  cheaper.
+
+
+sprinkling some more strict argument taking
+
+  a considerable speedup (10%) could be gained by making the fromWord8 function
+  more strict in all its arguments. This changes its semantics and may allow
+  some further optimizations when inlined.
+
