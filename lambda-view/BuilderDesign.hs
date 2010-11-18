@@ -31,7 +31,7 @@ A builder should represent a sequence of bytes such that the following two objec
 
 The work of a builder is handled by build steps. Once we tell a build step where it can start to write and where the buffer ends, the build step will write all the bytes it represents and return a build signal that tells us how to proceed. 
 If the build signal is Done pf, then the build step has completed its work and the next free byte in the buffer is pointed to by pf. 
-If the build signal is BufferFull requiredSize pf nextStep, then the build step has filled the buffer up to pf and now requires a new buffer with at least the size requiredSize. If we were creating a lazy bytestring, we would now ship of the full buffer as a chunk and allocate a new buffer that we can passt to nextStep.
+If the build signal is BufferFull requiredSize pf nextStep, then the build step has filled the buffer up to pf and now requires a new buffer with at least the size requiredSize. If we were creating a lazy bytestring, we would now ship of the full buffer as a chunk and allocate a new buffer that we can pass to nextStep.
 The build signal InsertByteString pf bs nextStep, tells us that the build step has filled the buffer up to pf and would now like to insert a bytestring directly into the output sequence of buffers. The idea behind this signal is that it allows us to avoid copying large bytestrings.
 
 A builder is now just a build step parametrized over the build step that should be executed after the builder has done its output.
@@ -65,7 +65,7 @@ data Write = Write Int (Ptr Word8 -> IO ())
 writeWord8 :: Word8 -> Write
 writeWord8 x = Write 1 (\pf -> poke pf x)
 
-{- So defining writes is simple. Constructing a builder from a write is also not too difficult once you have understoop how to define functions such that they can call the BufferFull signal with a reference to themselves.
+{- So defining writes is simple. Constructing a builder from a write is also not too difficult once you have understood how to define functions such that they can call the BufferFull signal with a reference to themselves.
 -}
 
 fromWrite :: Write -> Builder
@@ -95,7 +95,7 @@ buildABC = fromWord8s [65..90]
 {-
 The missing piece is now a driver function that actually runs a builder. A very nice property of our builder design is that it completely decouples the allocation strategy for the output buffers from the actual writing to them. Hence, whatever buffer you have ready, you can tell a builder to fill it. The only caveat is that a build step may require a large buffer than you can provide. However, all builders I implemented up to now can be wrapped at almost every point, so they would even work with a very small output buffer.
 
-Additionally, this design also has the advantage the whole state of the driver is kept out of the performance critical funtions; i.e., the concatenation of builders and their implementation itself. This is one of the core differences to the builder implementation provided by Data.Binary.Builder from the binary package.
+Additionally, this design also has the advantage the whole state of the driver is kept out of the performance critical functions; i.e., the concatenation of builders and their implementation itself. This is one of the core differences to the builder implementation provided by Data.Binary.Builder from the binary package.
 
 The driver I implement here runs a builder and executes an IO action on each full buffer denoted by a strict bytestring. We could for example use this to send the bytestring over the network using Network.Socket.ByteString. This driver is a slightly simpler to implement than the generation of a lazy bytestring. Moreover, it has the nice property that no unsafePerformIO is involved; which means that there are no other semantic pitfalls than the ones already provided by the IO monad ;-)
 -}
