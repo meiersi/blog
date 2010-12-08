@@ -150,10 +150,11 @@ A typical optimization of a tight loop is the writing of a list of elements. We 
 
 fromWriteList :: (a -> Write) -> [a] -> Builder
 fromWriteList write = 
-    \xs -> Builder $ step xs
+    Builder . step
   where
     step xs0 !k !pf0 !pe0 = go xs0 pf0
       where
+        go :: [a] -> Ptr Word8 -> IO BuildSignal
         go []          !pf = k pf pe0
         go xs@(x':xs') !pf
           | pf' <= pe0  = io pf >> go xs' pf'
