@@ -1,0 +1,39 @@
+┌─(simon@bumped)-(~/repositories/git/github/meiersi/blaze-builder)-(master +?)                                                                                                                         
+└─╼ make utf8-io                                                                                                                                                                                       
+ghc-7.0.2 --make -O2 -fforce-recomp -main-is Utf8IO benchmarks/Utf8IO.hs                                                                                                                               
+[ 1 of 10] Compiling Blaze.ByteString.Builder.Internal.UncheckedShifts ( Blaze/ByteString/Builder/Internal/UncheckedShifts.hs, Blaze/ByteString/Builder/Internal/UncheckedShifts.o )                   
+[ 2 of 10] Compiling Blaze.ByteString.Builder.Internal.Types ( Blaze/ByteString/Builder/Internal/Types.hs, Blaze/ByteString/Builder/Internal/Types.o )                                                 
+[ 3 of 10] Compiling Blaze.ByteString.Builder.Internal.Write ( Blaze/ByteString/Builder/Internal/Write.hs, Blaze/ByteString/Builder/Internal/Write.o )                                                 
+[ 4 of 10] Compiling Blaze.ByteString.Builder.Internal ( Blaze/ByteString/Builder/Internal.hs, Blaze/ByteString/Builder/Internal.o )                                                                   
+[ 5 of 10] Compiling Blaze.ByteString.Builder.Char.Utf8 ( Blaze/ByteString/Builder/Char/Utf8.hs, Blaze/ByteString/Builder/Char/Utf8.o )                                                                
+[ 6 of 10] Compiling Blaze.ByteString.Builder.Word ( Blaze/ByteString/Builder/Word.hs, Blaze/ByteString/Builder/Word.o )                                                                               
+[ 7 of 10] Compiling Blaze.ByteString.Builder.Int ( Blaze/ByteString/Builder/Int.hs, Blaze/ByteString/Builder/Int.o )                                                                                  
+[ 8 of 10] Compiling Blaze.ByteString.Builder.ByteString ( Blaze/ByteString/Builder/ByteString.hs, Blaze/ByteString/Builder/ByteString.o )                                                             
+[ 9 of 10] Compiling Blaze.ByteString.Builder ( Blaze/ByteString/Builder.hs, Blaze/ByteString/Builder.o )                                                                                              
+[10 of 10] Compiling Utf8IO           ( benchmarks/Utf8IO.hs, benchmarks/Utf8IO.o )                                                                                                                    
+Linking benchmarks/Utf8IO ...                                                                                                                                                                          
+time ./benchmarks/Utf8IO via-text    100000000 /dev/null                                                                                                                                               
+via-text: 5.978718s                                                                                                                                                                                    
+5.95user 0.02system 0:05.98elapsed 99%CPU (0avgtext+0avgdata 18704maxresident)k                                                                                                                        
+0inputs+0outputs (0major+1239minor)pagefaults 0swaps                                                                                                                                                   
+time ./benchmarks/Utf8IO text        100000000 /dev/null                                                                                                                                               
+text: 1.081576s                                                                                                                                                                                        
+5.75user 0.22system 0:05.97elapsed 99%CPU (0avgtext+0avgdata 815712maxresident)k                                                                                                                       
+0inputs+0outputs (0major+51052minor)pagefaults 0swaps                                                                                                                                                  
+time ./benchmarks/Utf8IO blaze       100000000 /dev/null                                                                                                                                               
+blaze: 1.702032s                                                                                                                                                                                       
+1.69user 0.00system 0:01.70elapsed 100%CPU (0avgtext+0avgdata 16416maxresident)k                                                                                                                       
+0inputs+0outputs (0major+1094minor)pagefaults 0swaps                                                                                                                                                   
+time ./benchmarks/Utf8IO base        100000000 /dev/null                                                                                                                                               
+base: 2.636096s                                                                                                                                                                                        
+2.61user 0.02system 0:02.63elapsed 99%CPU (0avgtext+0avgdata 11664maxresident)k                                                                                                                        
+0inputs+0outputs (0major+797minor)pagefaults 0swaps                                                                                                                                                    
+time ./benchmarks/Utf8IO utf8-light  100000000 /dev/null                                                                                                                                               
+utf8-light: 40.186569s
+37.77user 2.39system 0:40.20elapsed 99%CPU (0avgtext+0avgdata 841296maxresident)k
+0inputs+0outputs (0major+574677minor)pagefaults 0swaps
+time ./benchmarks/Utf8IO utf8-string 100000000 /dev/null
+utf8-string: 47.991854s
+47.75user 0.19system 0:47.99elapsed 99%CPU (0avgtext+0avgdata 26816maxresident)k
+0inputs+0outputs (0major+1744minor)pagefaults 0swaps
+
