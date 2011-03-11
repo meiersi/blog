@@ -37,3 +37,42 @@ utf8-string: 47.991854s
 47.75user 0.19system 0:47.99elapsed 99%CPU (0avgtext+0avgdata 26816maxresident)k
 0inputs+0outputs (0major+1744minor)pagefaults 0swaps
 
+
+Efficient UTF-8 Encoding
+
+Belgien beer and UTF-8 encoding: what a coincidence. Well, this post is just a
+quick post about the results for UTF-8 encoding 100'000'000 characters to /dev/null
+using the various options that our current Haskell ecosystem offers. It happens
+to be written after a very nice Belgian evening spent in the awesome Minimum
+climbing gym in Zurich Wollishofen. Here's the code and here are the results obtained
+on my Core 2 Duo laptop with 2GB RAM using GHC 7.0.2 on a 32bit Linux 2.6.32-29.
+
+text 1.081576s                                                                                                                                                                                        
+blaze 1.702032s                                                                                                                                                                                       
+base 2.636096s                                                                                                                                                                                        
+via-text 5.978718s                                                                                                                                                                                    
+utf8-string 47.991854s
+utf8-light 40.186569s
+
+The result for text is the time it takes to UTF-8 encode a nicely packed lazy text 
+value of length 100'000'000. The other times for blaze, base, via-text, and
+utf8-string measure how long it takes to UTF-8 encode a String of length 100'000'000
+using blaze-builder, GHC 7.0.2's base library, packing to a lazy text value and
+encoding it, and using the utf8-string library. Sadly, utf8-light supports only
+strict ByteStrings and, hence, it's not really usable to UTF-8 encode a String that
+long. Therefore, the time given is the time it takes to encode a String of
+length 1'000'000 a hundred times.
+
+My conclusions after this experiment are the following:
+1. Using [Word8] list based encoding implementations is likely to result in suboptimal performance.
+2. It is not worth packing a String first to a Text value, if it is encoded right away again.
+3. The current work I'm spending on integrating blaze-builder with the bytestring library is
+   really worth the effort. Moreover, it might even be worth a try to replace
+   the String encoding functions in the base library by according Builders to gain these
+   additional 50 percent of speed.
+4. It would be very interesting to see how well we fare against other languages. If a reader
+   would implement the same benchmark in C, C++, Java, Python, ... I'd be very
+   glad to publish his results here.
+
+
+
